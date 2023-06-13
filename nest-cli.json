@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/monorepo-nestjs-typeorm/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/monorepo-nestjs-typeorm/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/monorepo-nestjs-typeorm",
+  "projects": {
+    "api": {
+      "type": "application",
+      "root": "apps/api",
+      "entryFile": "main",
+      "sourceRoot": "apps/api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api/tsconfig.app.json"
+      }
+    },
+    "admin": {
+      "type": "application",
+      "root": "apps/admin",
+      "entryFile": "main",
+      "sourceRoot": "apps/admin/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/admin/tsconfig.app.json"
+      }
+    },
+    "dao": {
+      "type": "library",
+      "root": "libs/dao",
+      "entryFile": "index",
+      "sourceRoot": "libs/dao/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/dao/tsconfig.lib.json"
+      }
+    }
+  }
+}
