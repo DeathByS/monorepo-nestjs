@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
+import { ApiServerConfig } from './config/api-server-config';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
-  imports: [],
+  imports: [ApiServerConfig],
   controllers: [ApiController],
-  providers: [ApiService],
+  providers: [{ provide: APP_PIPE, useClass: ValidationPipe }, ApiService],
 })
 export class ApiModule {}
