@@ -18,12 +18,21 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/dao": [
+      "@libs/dao": [
         "libs/dao/src"
       ],
-      "@app/dao/*": [
+      "@libs/dao/*": [
         "libs/dao/src/*"
+      ],
+      "@libs/common": [
+        "libs/common/src"
+      ],
+      "@libs/common/*": [
+        "libs/common/src/*"
       ]
-    }
+    },
+    "lib": [
+      "ES2021.String"
+    ]
   }
 }

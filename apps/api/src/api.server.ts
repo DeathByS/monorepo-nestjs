@@ -4,8 +4,6 @@ export class ApiServer {
   constructor(private readonly app: INestApplication) {}
 
   async init() {
-    // if (process.env.NODE_ENV !== 'prod') {
-    // }
     this.app.useGlobalPipes(new ValidationPipe());
   }
 

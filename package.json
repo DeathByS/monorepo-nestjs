@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/monorepo-nestjs-typeorm/main",
+    "start:debug:api": "run() { rm -R dist/; npm run start:debug api; }; run",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -27,6 +28,7 @@
     "@nestjs/typeorm": "^9.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "mysql2": "^3.3.5",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
@@ -77,7 +79,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/dao(|/.*)$": "<rootDir>/libs/dao/src/$1"
+      "^@libs/dao(|/.*)$": "<rootDir>/libs/dao/src/$1",
+      "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1"
     }
   }
 }
