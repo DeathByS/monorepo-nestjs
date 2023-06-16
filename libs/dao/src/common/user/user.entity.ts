@@ -1,4 +1,4 @@
-import { BaseTimeEntity } from '@libs/dao/base/base-time.entity';
+import { BaseTimeEntity } from '@libs/dao/base/time/base-time.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
