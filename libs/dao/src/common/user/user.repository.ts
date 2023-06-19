@@ -12,4 +12,16 @@ export class UserRepository extends Repository<User> {
       .where('user.id=:id', { id: id })
       .getOne();
   }
+
+  async customFindAndCount(
+    take: number,
+    skip: number,
+    orderBy: 'ASC' | 'DESC',
+  ): Promise<[User[], number]> {
+    return await this.createQueryBuilder('user')
+      .take(take)
+      .skip(skip)
+      .orderBy('user.id', orderBy)
+      .getManyAndCount();
+  }
 }
