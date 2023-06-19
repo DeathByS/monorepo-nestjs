@@ -18,6 +18,6 @@ export class UserDto extends ExcludeBaseTimeDto {
   blockType: boolean;
 
   public static fromEntity<User>(user: User): UserDto {
-    return plainToInstance(UserDto, instanceToPlain(User));
+    return plainToInstance(UserDto, instanceToPlain(user));
   }
 }
