@@ -7,6 +7,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { Response, ResponseEntity } from '@libs/common/network/response-entity';
+import { PageMetaDto } from '@libs/common/pagination/dto/page-meta.dto';
 
 export interface ApiResponseEntityMetaOptions {
   type?: Type<any>;
@@ -33,6 +34,11 @@ export function ApiResponseEntity(options?: ApiResponseEntityOptions) {
     properties = {
       data: { type: 'array', items: { $ref: getSchemaPath(options.type) } },
     };
+  } else if (options?.isPagination) {
+    properties = {
+      data: { type: 'array', items: { $ref: getSchemaPath(options.type) } },
+      meta: { $ref: getSchemaPath(PageMetaDto) },
+    };
   } else {
     properties = { data: { $ref: getSchemaPath(options.type) } };
   }
@@ -41,6 +47,7 @@ export function ApiResponseEntity(options?: ApiResponseEntityOptions) {
     HttpCode(HttpStatus.OK),
     ApiExtraModels(ResponseEntity),
     ApiExtraModels(options.type),
+    ApiExtraModels(PageMetaDto),
     ApiOperation({ summary: options?.summary }),
     ApiResponse({ status: 403, description: 'Forbidden.' }),
     ApiOkResponse({
