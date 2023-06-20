@@ -48,7 +48,7 @@ export class UserController {
     return new ResponseEntity<UserDto>().ok().body(userDto);
   }
 
-  @Put('/:id')
+  @Put('/:id/nickname')
   @ApiResponseEntity({ type: UserDto, summary: '유저 닉네임 수정' })
   async updateUserNickName(
     @Param('id') id: number,
