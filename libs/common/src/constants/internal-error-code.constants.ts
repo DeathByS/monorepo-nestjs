@@ -4,4 +4,5 @@ export enum InternalErrorCode {
   USER_ALREADY_CREATED = 52,
   USER_UPDATE_FAIL = 53,
   USER_BLOCK = 54,
+  USER_NICKNAME_ALREADY_USED = 55,
 }
