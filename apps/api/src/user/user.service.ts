@@ -76,4 +76,17 @@ export class UserService {
       );
     }
   }
+
+  async deleteUser(id: number): Promise<boolean> {
+    const deleteResult = await this.userRepository.softDeleteById(id);
+
+    if (!deleteResult.affected) {
+      throw new InternalServerErrorException(
+        InternalErrorCode.USER_DELETE_FAILED,
+        'USER_DELETE_FAILED',
+      );
+    }
+
+    return true;
+  }
 }

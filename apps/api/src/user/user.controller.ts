@@ -1,4 +1,4 @@
-import { Controller, Param, Get, Query, Put, Body } from '@nestjs/common';
+import { Controller, Param, Get, Query, Put, Body, Delete } from "@nestjs/common";
 import { UserService } from './user.service';
 import { User } from '@libs/dao/common/user/user.entity';
 import { ApiTags } from '@nestjs/swagger';
@@ -59,5 +59,12 @@ export class UserController {
       updateUserNicknameInDto,
     );
     return new ResponseEntity<UserDto>().ok().body(userDto);
+  }
+
+  @Delete('/:id')
+  @ApiResponseEntity()
+  async deleteUser(@Param('id') id: number) {
+    const result = await this.userService.deleteUser(id);
+    return new ResponseEntity<boolean>().ok().body(result);
   }
 }
