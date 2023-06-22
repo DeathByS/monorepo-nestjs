@@ -1,13 +1,25 @@
-import { Controller, Param, Get, Query, Put, Body, Delete } from "@nestjs/common";
+import {
+  Controller,
+  Param,
+  Get,
+  Query,
+  Put,
+  Body,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '@libs/dao/common/user/user.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { UserDto } from '@libs/dao/common/user/dto/user.dto';
 import { ResponseEntity } from '@libs/common/network/response-entity';
 import { ApiResponseEntity } from '@libs/common/decorator/api-response-entity.decorator';
 import { PageOptionsDto } from '@libs/common/pagination/dto/page-options.dto';
 import { UpdateUserNicknameInDto } from './dto/update-user-nickname-in.dto';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiSecurity('apiKey')
+@UseGuards(AuthGuard('apiKey'))
 @ApiTags('User')
 @Controller('user')
 export class UserController {

@@ -9,6 +9,15 @@ export class ApiServer {
       .setTitle('Api Study Server')
       .setDescription('Nest.js monorepo-typeorm based api server study')
       .setVersion('1.0')
+      .addApiKey(
+        {
+          type: 'apiKey',
+          name: 'X-API-KEY',
+          in: 'header',
+          description: 'api-key',
+        },
+        'apiKey',
+      )
       .build();
 
     const document = SwaggerModule.createDocument(this.app, config);
