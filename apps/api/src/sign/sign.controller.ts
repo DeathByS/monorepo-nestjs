@@ -14,8 +14,8 @@ import { ApiResponseEntity } from '@libs/common/decorator/api-response-entity.de
 @Controller('Signing')
 export class SignController {
   constructor(private readonly signService: SignService) {}
-  @Post('/in')
-  async signIn(@Body() signInInDto: SignInInDto) {}
+  // @Post('/in')
+  // async signIn(@Body() signInInDto: SignInInDto) {}
   @ApiResponseEntity({ type: SignUpOutDto, summary: '회원 가입' })
   @Post('/up')
   async signUp(
@@ -24,6 +24,6 @@ export class SignController {
     const signUpOutDto = await this.signService.signUp(signUpInDto);
     return new ResponseEntity<SignUpOutDto>().ok().body(signUpOutDto);
   }
-  @Post('/out')
-  async signOut() {}
+  // @Post('/out')
+  // async signOut() {}
 }
