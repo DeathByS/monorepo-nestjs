@@ -34,7 +34,7 @@ export class UserController {
   async getUsers(
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<ResponseEntity<UserDto[]>> {
-    const [userDto, pageMetaDto] = await this.userService.getUsers(
+    const [userDto, pageMetaDto] = await this.userService.findUsers(
       pageOptionsDto,
     );
 
@@ -47,7 +47,7 @@ export class UserController {
   @Get('/:id')
   @ApiResponseEntity({ type: UserDto, summary: '유저 찾기 by id' })
   async getUser(@Param('id') id: number): Promise<ResponseEntity<UserDto>> {
-    const userDto = await this.userService.getUserById(id);
+    const userDto = await this.userService.findById(id);
     return new ResponseEntity<UserDto>().ok().body(userDto);
   }
 
@@ -56,7 +56,7 @@ export class UserController {
   async getUserByNid(
     @Param('nid') nid: string,
   ): Promise<ResponseEntity<UserDto>> {
-    const userDto = await this.userService.getUserByNid(nid);
+    const userDto = await this.userService.findByNid(nid);
     return new ResponseEntity<UserDto>().ok().body(userDto);
   }
 
@@ -66,7 +66,7 @@ export class UserController {
     @Param('id') id: number,
     @Body() updateUserNicknameInDto: UpdateUserNicknameInDto,
   ): Promise<ResponseEntity<UserDto>> {
-    const userDto = await this.userService.updateUserNickname(
+    const userDto = await this.userService.updateNickname(
       id,
       updateUserNicknameInDto,
     );
@@ -76,7 +76,7 @@ export class UserController {
   @Delete('/:id')
   @ApiResponseEntity()
   async deleteUser(@Param('id') id: number) {
-    const result = await this.userService.deleteUser(id);
+    const result = await this.userService.delete(id);
     return new ResponseEntity<boolean>().ok().body(result);
   }
 }

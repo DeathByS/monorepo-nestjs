@@ -1,4 +1,4 @@
-import { DataSource, DeleteResult, Repository } from "typeorm";
+import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { User } from '@libs/dao/common/user/user.entity';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InternalErrorCode } from '@libs/common/constants/internal-error-code.constants';
@@ -43,8 +43,8 @@ export class UserRepository extends Repository<User> {
 
     if (!result.affected) {
       throw new InternalServerErrorException(
-        InternalErrorCode.USER_NICKNAME_UPDATE_FAILED,
-        'USER_NICKNAME_UPDATE_FAILED',
+        InternalErrorCode.USER_UPDATE_FAIL,
+        'USER_UPDATE_FAIL',
       );
     }
   }
@@ -52,10 +52,22 @@ export class UserRepository extends Repository<User> {
   async findByNickname(nickName: string): Promise<User> {
     return await this.createQueryBuilder('user')
       .setLock('pessimistic_write')
+      .useTransaction(true)
       .where('user.nickName=:nickName', { nickName: nickName })
       .getOne();
   }
 
+  async findByEmail(email: string): Promise<User> {
+    return await this.createQueryBuilder('user')
+      .where('user.email=:email', { email: email })
+      .getOne();
+  }
+
+  async countByEmail(email: string): Promise<number> {
+    return await this.createQueryBuilder('user')
+      .where('user.email=:email', { email })
+      .getCount();
+  }
 
   async softDeleteById(id: number): Promise<DeleteResult> {
     return await this.createQueryBuilder('user')

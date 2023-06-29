@@ -1,6 +1,5 @@
 import { ExcludeBaseTimeDto } from '@libs/dao/base/time/dto/exclude-base-time.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '@libs/dao/common/user/user.entity';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
 
 export class UserDto extends ExcludeBaseTimeDto {
@@ -9,7 +8,9 @@ export class UserDto extends ExcludeBaseTimeDto {
   @ApiProperty()
   nid: string;
   @ApiProperty()
-  address: string;
+  email: string;
+  @ApiProperty()
+  password: string;
   @ApiProperty()
   nickName: string;
   @ApiProperty()
@@ -17,6 +18,10 @@ export class UserDto extends ExcludeBaseTimeDto {
   @ApiProperty()
   blockType: boolean;
 
+  constructor(partial?: Partial<UserDto>) {
+    super();
+    Object.assign(this, partial);
+  }
   public static fromEntity<User>(user: User): UserDto {
     return plainToInstance(UserDto, instanceToPlain(user));
   }

@@ -22,7 +22,7 @@ export class ResponseEntity<T> {
   private data: T | T[];
   @ApiProperty({ example: '' })
   private message?: string;
-  @ApiProperty({ description: 'pagination meta data'})
+  @ApiProperty({ description: 'pagination meta data' })
   private meta?: any;
   public ok(): ResponseEntity<T> {
     this.code = 0;

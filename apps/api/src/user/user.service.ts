@@ -4,15 +4,12 @@ import { UserDto } from '@libs/dao/common/user/dto/user.dto';
 import { InternalErrorCode } from '@libs/common/constants/internal-error-code.constants';
 import { PageOptionsDto } from '@libs/common/pagination/dto/page-options.dto';
 import { PageMetaDto } from '@libs/common/pagination/dto/page-meta.dto';
-import { AST } from 'eslint';
-import Program = AST.Program;
-import { User } from '@libs/dao/common/user/user.entity';
 import { UpdateUserNicknameInDto } from './dto/update-user-nickname-in.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
-  async getUserById(id: number): Promise<UserDto> {
+  async findById(id: number): Promise<UserDto> {
     const user = await this.userRepository.findById(id);
     if (!user) {
       throw new InternalServerErrorException(
@@ -23,7 +20,7 @@ export class UserService {
     return UserDto.fromEntity(user);
   }
 
-  async getUserByNid(nid: string): Promise<UserDto> {
+  async findByNid(nid: string): Promise<UserDto> {
     const user = await this.userRepository.findByNid(nid);
     if (!user) {
       throw new InternalServerErrorException(
@@ -34,7 +31,18 @@ export class UserService {
     return UserDto.fromEntity(user);
   }
 
-  async getUsers(
+  async findByEmail(email: string): Promise<UserDto> {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new InternalServerErrorException(
+        InternalErrorCode.USER_NOT_FOUND,
+        'USER_NOT_FOUND',
+      );
+    }
+    return UserDto.fromEntity(user);
+  }
+
+  async findUsers(
     pageOptionsDto: PageOptionsDto,
   ): Promise<[UserDto[], PageMetaDto]> {
     const { order, page, take } = pageOptionsDto;
@@ -53,11 +61,11 @@ export class UserService {
     return [userDto, pageMetaDto];
   }
 
-  async updateUserNickname(
+  async updateNickname(
     id: number,
     updateUserNicknameInDto: UpdateUserNicknameInDto,
   ): Promise<UserDto> {
-    await this._checkNickName(updateUserNicknameInDto.nickName);
+    await this.checkNickName(updateUserNicknameInDto.nickName);
 
     await this.userRepository.updateById(id, updateUserNicknameInDto);
 
@@ -66,7 +74,7 @@ export class UserService {
     return UserDto.fromEntity(user);
   }
 
-  private async _checkNickName(nickName: string) {
+  async checkNickName(nickName: string) {
     const user = await this.userRepository.findByNickname(nickName);
 
     if (user) {
@@ -77,7 +85,18 @@ export class UserService {
     }
   }
 
-  async deleteUser(id: number): Promise<boolean> {
+  async countByEmail(email: string) {
+    const userCount = await this.userRepository.countByEmail(email);
+
+    if (userCount) {
+      throw new InternalServerErrorException(
+        InternalErrorCode.USER_EMAIL_ALREADY_USED,
+        'USER_EMAIL_ALREADY_USED',
+      );
+    }
+  }
+
+  async delete(id: number): Promise<boolean> {
     const deleteResult = await this.userRepository.softDeleteById(id);
 
     if (!deleteResult.affected) {
