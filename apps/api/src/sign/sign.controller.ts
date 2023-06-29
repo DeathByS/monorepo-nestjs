@@ -10,8 +10,8 @@ import { ApiResponseEntity } from '@libs/common/decorator/api-response-entity.de
 
 @ApiSecurity('apiKey')
 @UseGuards(AuthGuard('apiKey'))
-@ApiTags('Signing')
-@Controller('Signing')
+@ApiTags('sign')
+@Controller('sign')
 export class SignController {
   constructor(private readonly signService: SignService) {}
   // @Post('/in')
