@@ -18,6 +18,15 @@ export class ApiServer {
         },
         'apiKey',
       )
+      .addBearerAuth(
+        {
+          type: 'http',
+          name: 'Authorization',
+          in: 'header',
+          description: 'jwt auth',
+        },
+        'jwt',
+      )
       .build();
 
     const document = SwaggerModule.createDocument(this.app, config);

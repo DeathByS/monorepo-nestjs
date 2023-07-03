@@ -10,16 +10,19 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '@libs/dao/common/user/user.entity';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserDto } from '@libs/dao/common/user/dto/user.dto';
 import { ResponseEntity } from '@libs/common/network/response-entity';
 import { ApiResponseEntity } from '@libs/common/decorator/api-response-entity.decorator';
 import { PageOptionsDto } from '@libs/common/pagination/dto/page-options.dto';
 import { UpdateUserNicknameInDto } from './dto/update-user-nickname-in.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { CurrentUser } from '@libs/common/decorator/current-user.decorator';
 
-@ApiSecurity('apiKey')
-@UseGuards(AuthGuard('apiKey'))
+// @ApiSecurity('apiKey')
+// @UseGuards(AuthGuard('apiKey'))
+@ApiBearerAuth('jwt')
+@UseGuards(JwtAuthGuard)
 @ApiTags('User')
 @Controller('user')
 export class UserController {
@@ -60,23 +63,23 @@ export class UserController {
     return new ResponseEntity<UserDto>().ok().body(userDto);
   }
 
-  @Put('/:id/nickname')
+  @Put('/nickname')
   @ApiResponseEntity({ type: UserDto, summary: '유저 닉네임 수정' })
   async updateUserNickName(
-    @Param('id') id: number,
+    @CurrentUser() user,
     @Body() updateUserNicknameInDto: UpdateUserNicknameInDto,
   ): Promise<ResponseEntity<UserDto>> {
     const userDto = await this.userService.updateNickname(
-      id,
+      user.id,
       updateUserNicknameInDto,
     );
     return new ResponseEntity<UserDto>().ok().body(userDto);
   }
 
-  @Delete('/:id')
+  @Delete('/')
   @ApiResponseEntity()
-  async deleteUser(@Param('id') id: number) {
-    const result = await this.userService.delete(id);
+  async deleteUser(@CurrentUser() user) {
+    const result = await this.userService.delete(user.id);
     return new ResponseEntity<boolean>().ok().body(result);
   }
 }

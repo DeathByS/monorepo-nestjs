@@ -1,4 +1,6 @@
 export enum InternalErrorCode {
+  // Auth : 1 ~ 50
+  AUTH_USER_MISMATCHED_PASSWORD = 1,
   // User : 51 ~ 100
   USER_NOT_FOUND = 51,
   USER_ALREADY_CREATED = 52,

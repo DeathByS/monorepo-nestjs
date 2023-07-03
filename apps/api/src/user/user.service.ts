@@ -5,6 +5,7 @@ import { InternalErrorCode } from '@libs/common/constants/internal-error-code.co
 import { PageOptionsDto } from '@libs/common/pagination/dto/page-options.dto';
 import { PageMetaDto } from '@libs/common/pagination/dto/page-meta.dto';
 import { UpdateUserNicknameInDto } from './dto/update-user-nickname-in.dto';
+import { User } from '@libs/dao/common/user/user.entity';
 
 @Injectable()
 export class UserService {
@@ -31,7 +32,7 @@ export class UserService {
     return UserDto.fromEntity(user);
   }
 
-  async findByEmail(email: string): Promise<UserDto> {
+  async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new InternalServerErrorException(
@@ -39,7 +40,7 @@ export class UserService {
         'USER_NOT_FOUND',
       );
     }
-    return UserDto.fromEntity(user);
+    return user;
   }
 
   async findUsers(

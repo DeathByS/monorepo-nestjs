@@ -7,6 +7,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { ResponseEntity } from '@libs/common/network/response-entity';
 import { SignUpOutDto } from './dto/sign-up-out.dto';
 import { ApiResponseEntity } from '@libs/common/decorator/api-response-entity.decorator';
+import { JwtPayload } from '../constants/jwt.constants';
+import { SignInOutDto } from './dto/sign-in-out.dto';
 
 @ApiSecurity('apiKey')
 @UseGuards(AuthGuard('apiKey'))
@@ -14,8 +16,25 @@ import { ApiResponseEntity } from '@libs/common/decorator/api-response-entity.de
 @Controller('sign')
 export class SignController {
   constructor(private readonly signService: SignService) {}
-  // @Post('/in')
-  // async signIn(@Body() signInInDto: SignInInDto) {}
+  @ApiResponseEntity({ type: SignInOutDto, summary: '로그인' })
+  @Post('/in')
+  async signIn(
+    @Body() signInInDto: SignInInDto,
+  ): Promise<ResponseEntity<SignInOutDto>> {
+    const userDto = await this.signService.signIn(signInInDto);
+
+    const payload: JwtPayload = {
+      id: userDto.id,
+      nid: userDto.nid,
+      email: userDto.email,
+    };
+
+    const accessToken = this.signService.signJwt(payload);
+
+    return new ResponseEntity<SignInOutDto>()
+      .ok()
+      .body(SignInOutDto.of().setAccessToken(accessToken));
+  }
   @ApiResponseEntity({ type: SignUpOutDto, summary: '회원 가입' })
   @Post('/up')
   async signUp(
