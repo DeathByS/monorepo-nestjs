@@ -17,6 +17,8 @@ export class UserDto extends ExcludeBaseTimeDto {
   gameDbId: number;
   @ApiProperty()
   blockType: boolean;
+  @ApiProperty()
+  refreshToken: string;
 
   constructor(partial?: Partial<UserDto>) {
     super();

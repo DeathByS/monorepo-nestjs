@@ -47,6 +47,8 @@ export class SignService {
     return UserDto.fromEntity(user);
   }
 
+  async signOut() {}
+
   signJwt(payload: JwtPayload) {
     return this.jwtService.sign(payload);
   }

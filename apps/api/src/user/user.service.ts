@@ -109,4 +109,31 @@ export class UserService {
 
     return true;
   }
+  async setRefreshToken(id: number, refreshToken: string) {
+    return this.userRepository.updateById(id, { refreshToken: refreshToken });
+  }
+
+  async deleteRefreshToken(id: number) {
+    return this.userRepository.updateById(id, { refreshToken: null });
+  }
+
+  async getUserIfRefreshTokenMatches(
+    id: number,
+    refreshToken: string,
+  ): Promise<UserDto> {
+    const userDto = await this.findById(id);
+    if (refreshToken === userDto.refreshToken) return userDto;
+    return null;
+  }
+
+  async signOut(id) {
+    const userDto = await this.findById(id);
+    if (!userDto.refreshToken) {
+      throw new InternalServerErrorException(
+        InternalErrorCode.USER_ALREADY_LOGOUT,
+        'USER_ALREADY_LOGOUT',
+      );
+    }
+    await this.deleteRefreshToken(id);
+  }
 }

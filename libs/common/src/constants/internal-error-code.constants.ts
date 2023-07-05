@@ -1,5 +1,5 @@
 export enum InternalErrorCode {
-  // Auth : 1 ~ 50
+  // Auth : 1 ~ 50,
   AUTH_USER_MISMATCHED_PASSWORD = 1,
   // User : 51 ~ 100
   USER_NOT_FOUND = 51,
@@ -10,4 +10,5 @@ export enum InternalErrorCode {
   USER_NICKNAME_UPDATE_FAILED = 56,
   USER_DELETE_FAILED = 57,
   USER_EMAIL_ALREADY_USED = 58,
+  USER_ALREADY_LOGOUT = 59,
 }

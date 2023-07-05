@@ -1,5 +1,6 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser'
 
 export class ApiServer {
   constructor(private readonly app: INestApplication) {}
@@ -27,11 +28,23 @@ export class ApiServer {
         },
         'jwt',
       )
+      /*
+      .addCookieAuth(
+        'RefreshToken',
+        {
+          type: 'apiKey',
+          in: 'cookie',
+          description: 'cookie refresh token',
+        },
+        'jwt-refresh',
+      )*/
       .build();
 
     const document = SwaggerModule.createDocument(this.app, config);
     SwaggerModule.setup('api-docs', this.app, document);
     this.app.useGlobalPipes(new ValidationPipe());
+    //request.cookies 를 바로 사용하기 위해 추가
+    this.app.use(cookieParser());
   }
 
   async run() {

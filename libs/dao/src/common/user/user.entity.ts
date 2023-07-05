@@ -29,6 +29,9 @@ export class User extends BaseTimeEntity {
   @Column({ nullable: true })
   nickName: string;
 
+  @Column({ nullable: true })
+  refreshToken?: string;
+
   @Column({ default: 0 })
   gameDbId: number;
 

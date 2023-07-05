@@ -39,7 +39,9 @@ export class ResponseEntity<T> {
     this.data = data;
     return this;
   }
-
+  public build(): Response {
+    return new Response(this.code, this.data, this.message);
+  }
   public setPageMeta(pageMeta: any): ResponseEntity<T> {
     this.meta = pageMeta;
     return this;
