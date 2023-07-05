@@ -18,6 +18,7 @@ import { PageOptionsDto } from '@libs/common/pagination/dto/page-options.dto';
 import { UpdateUserNicknameInDto } from './dto/update-user-nickname-in.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CurrentUser } from '@libs/common/decorator/current-user.decorator';
+import { UpdateUserNicknameOutDto } from './dto/update-user-nickname-out.dto';
 
 // @ApiSecurity('apiKey')
 // @UseGuards(AuthGuard('apiKey'))
@@ -64,16 +65,25 @@ export class UserController {
   }
 
   @Put('/nickname')
-  @ApiResponseEntity({ type: UserDto, summary: '유저 닉네임 수정' })
+  @ApiResponseEntity({
+    type: UpdateUserNicknameOutDto,
+    summary: '유저 닉네임 수정',
+  })
   async updateUserNickName(
     @CurrentUser() user,
     @Body() updateUserNicknameInDto: UpdateUserNicknameInDto,
-  ): Promise<ResponseEntity<UserDto>> {
+  ): Promise<ResponseEntity<UpdateUserNicknameOutDto>> {
     const userDto = await this.userService.updateNickname(
       user.id,
       updateUserNicknameInDto,
     );
-    return new ResponseEntity<UserDto>().ok().body(userDto);
+
+    const updateUserNicknameOutDto = new UpdateUserNicknameOutDto({
+      id: userDto.id,
+      nickName: userDto.nickName,
+      email: userDto.email,
+    });
+    return new ResponseEntity<UpdateUserNicknameOutDto>().ok().body(updateUserNicknameOutDto);
   }
 
   @Delete('/')

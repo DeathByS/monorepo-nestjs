@@ -15,7 +15,7 @@ export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Index('IDX_NID', { unique: true})
+  @Index('IDX_NID', { unique: true })
   @Column()
   nid: string;
 
