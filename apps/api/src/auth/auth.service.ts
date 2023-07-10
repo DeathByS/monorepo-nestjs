@@ -25,7 +25,7 @@ export class AuthService {
       refreshToken: refreshToken,
       path: '/sign/refresh',
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'Lax',
       secure: process.env.NODE_ENV === 'prod',
       maxAge: JWT_REFRESH_OPTIONS.expiresIn * 1000,
     };
