@@ -50,7 +50,7 @@ on:
 
 env:
   SERVICE_NAME: ${{ inputs.service }}
-  AWS_REGION: ap-northeast-2                   # set this to your preferred AWS region, e.g. us-west-1
+  AWS_REGION: us-east-1                  # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: nestjs-study/${{ inputs.service }}          # set this to your Amazon ECR repository name
   
  
@@ -77,8 +77,8 @@ jobs:
     - name: Login to Amazon ECR Pubilc
       id: login-ecr-public
       uses: aws-actions/amazon-ecr-login@v1
-#       with:
-#         registry-type: 'public'
+      with:
+        registry-type: 'public'
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
