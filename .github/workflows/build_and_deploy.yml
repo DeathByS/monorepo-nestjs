@@ -52,6 +52,7 @@ env:
   SERVICE_NAME: ${{ inputs.service }}
   AWS_REGION: us-east-1                  # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: nestjs-study/${{ inputs.service }}          # set this to your Amazon ECR repository name
+  REGISTRY_ALIAS: ${{ secrets.REGISTRY_ALIAS }}
   
  
 permissions:
@@ -86,13 +87,11 @@ jobs:
 #        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }} - private
         ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
-        REGISTRY_ALIAS: ${{ env.REGISTRY_ALIAS }}
         FILE: ${{ env.SERVICE_NAME }}.Dockerfile
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        echo "{$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG}"
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $FILE .
         docker push $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
