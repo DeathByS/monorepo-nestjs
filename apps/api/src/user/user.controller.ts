@@ -83,7 +83,9 @@ export class UserController {
       nickName: userDto.nickName,
       email: userDto.email,
     });
-    return new ResponseEntity<UpdateUserNicknameOutDto>().ok().body(updateUserNicknameOutDto);
+    return new ResponseEntity<UpdateUserNicknameOutDto>()
+      .ok()
+      .body(updateUserNicknameOutDto);
   }
 
   @Delete('/')
