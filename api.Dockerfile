@@ -15,7 +15,7 @@ FROM node:17-alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/package*.json .
+COPY --from=builder /app/package*.json ./
 
 RUN npm install --only=production
 
