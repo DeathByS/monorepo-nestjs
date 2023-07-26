@@ -50,17 +50,20 @@ on:
 
 env:
   SERVICE_NAME: ${{ inputs.service }}
-  AWS_REGION: us-east-1                  # set this to your preferred AWS region, e.g. us-west-1
+  AWS_ECR_REGION: us-east-1                  # set this to your preferred AWS region, e.g. us-west-1
+  AWS_EC2_REGION: ap-northeast-2
   ECR_REPOSITORY: nestjs-study/${{ inputs.service }}          # set this to your Amazon ECR repository name
   REGISTRY_ALIAS: ${{ secrets.REGISTRY_ALIAS }}
+  IMAGE_TAG: ${{ github.sha }}
+  DOCKER_CONTAINER: nest-server-${{ inputs.service }} 
   
  
 permissions:
   contents: read
 
 jobs:
-  deploy:
-    name: Deploy
+  build:
+    name: Build and Push Image
     runs-on: ubuntu-latest
     environment: production
 
@@ -73,7 +76,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+        aws-region: ${{ env.AWS_ECR_REGION }}
 
     - name: Login to Amazon ECR Pubilc
       id: login-ecr-public
@@ -86,7 +89,6 @@ jobs:
       env:
 #        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }} - private
         ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
         FILE: ${{ env.SERVICE_NAME }}.Dockerfile
       run: |
         # Build a docker container and
@@ -96,4 +98,55 @@ jobs:
         docker push $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
- 
+  deploy:
+    needs: build 
+    name: deploy to EC2  
+    runs-on: [self-hosted, nestjs-study]
+    
+    steps:
+    - name: Configure AWS credentials 
+      uses: aws-actions/configure-aws-credentials@v1 
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+        
+    - name: Login to Amazon ECR Pubilc
+      id: login-ecr-public
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registry-type: 'public'
+        
+    - name: Pull Docker Image And Docker Run
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
+      run: |
+        echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+        echo "DB_CONNECTION_LIMIT=${{ secrets.DB_CONNECTION_LIMIT }}" >> .env
+        echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+        echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
+        echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
+
+        echo "COMMON_DB_HOST=${{ secrets.COMMON_DB_HOST }}" >> .env
+        echo "COMMON_DB_PORT=${{ secrets.COMMON_DB_PORT }}" >> .env
+        echo "COMMON_DB_ID=${{ secrets.COMMON_DB_ID }}" >> .env
+        echo "COMMON_DB_PW=${{ secrets.COMMON_DB_PW }}" >> .env
+        echo "COMMON_DB_DATABASE=${{ secrets.COMMON_DB_DATABASE }}" >> .env
+        echo "COMMON_DB_SYNCHRONIZE=${{ secrets.COMMON_DB_SYNCHRONIZE }}" >> .env
+        
+        cat .env
+        
+        docker pull $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
+        docker stop ${{ env.DOCKER_CONTAINER }} && docker rm ${{ env.DOCKER_CONTAINER }} &&  docker rmi $(docker images | grep "/api" | awk '{print $3}')
+        docker run --env-file ./.env -d -p 8080:8080 --name ${{ env.DOCKER_CONTAINER }} --restart always $ECR_REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
+        
+
+
+        
+        
+
+
+
+
+
+
